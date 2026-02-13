@@ -6,6 +6,7 @@ import lombok.ToString;
 import java.util.List;
 
 @Entity
+@Table(name = "article_groups")
 public class Group {
     public Group(String name, List<Article> articulos) {
         this.name = name;
