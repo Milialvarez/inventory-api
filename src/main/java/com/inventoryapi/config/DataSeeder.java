@@ -27,10 +27,10 @@ public class DataSeeder implements CommandLineRunner {
         System.out.println("---- INICIANDO CARGA DE DATOS DE PRUEBA ----");
 
         Role adminRole = new Role();
-        adminRole.setName("ROLE_ADMIN");
+        adminRole.setName("ADMIN");
 
         Role userRole = new Role();
-        userRole.setName("ROLE_USER");
+        userRole.setName("USER");
 
         roleRepository.saveAll(Set.of(adminRole, userRole));
 
@@ -58,7 +58,7 @@ public class DataSeeder implements CommandLineRunner {
         tv.setName("Samsung Smart TV 55");
         tv.setUnitPrice(600.00);
         tv.setStock(10);
-        tv.setGroup(electronics); // Relación
+        tv.setGroup(electronics);
 
         Article laptop = new Article();
         laptop.setName("Dell XPS 13");
