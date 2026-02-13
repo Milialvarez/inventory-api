@@ -62,8 +62,12 @@ public class MovementService {
     }
 
     @Transactional(readOnly = true)
-    public List<MovementDTO> getAllMovements() {
-        return movementRepository.findAll().stream()
+    public List<MovementDTO> getMovementsByArticleId(Long articleId) {
+        if (!articleRepository.existsById(articleId)) {
+            throw new RuntimeException("Article not found with id: " + articleId);
+        }
+
+        return movementRepository.findByArticleId(articleId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

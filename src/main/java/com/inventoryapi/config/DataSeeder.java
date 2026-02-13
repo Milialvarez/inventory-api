@@ -16,6 +16,7 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired private ArticleRepository articleRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private RoleRepository roleRepository;
+    @Autowired private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -25,7 +26,6 @@ public class DataSeeder implements CommandLineRunner {
 
         System.out.println("---- INICIANDO CARGA DE DATOS DE PRUEBA ----");
 
-        // 1. Crear Roles
         Role adminRole = new Role();
         adminRole.setName("ROLE_ADMIN");
 
@@ -34,20 +34,18 @@ public class DataSeeder implements CommandLineRunner {
 
         roleRepository.saveAll(Set.of(adminRole, userRole));
 
-        // 2. Crear Usuarios
         User admin = new User();
         admin.setUsername("admin");
-        admin.setPassword("admin123");
+        admin.setPassword(passwordEncoder.encode("admin123"));
         admin.setRoles(Set.of(adminRole));
 
         User empleado = new User();
         empleado.setUsername("pepe");
-        empleado.setPassword("pepe123");
+        empleado.setPassword(passwordEncoder.encode("pepe123"));
         empleado.setRoles(Set.of(userRole));
 
         userRepository.saveAll(Set.of(admin, empleado));
 
-        // 3. Crear Grupos
         Group electronics = new Group();
         electronics.setName("Electronics");
 
@@ -55,8 +53,6 @@ public class DataSeeder implements CommandLineRunner {
         furniture.setName("Furniture");
 
         groupRepository.saveAll(Set.of(electronics, furniture));
-
-        // 4. Crear Artículos
 
         Article tv = new Article();
         tv.setName("Samsung Smart TV 55");

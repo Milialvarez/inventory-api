@@ -16,9 +16,9 @@ public class MovementController {
     @Autowired
     private MovementService movementService;
 
-    @GetMapping
-    public ResponseEntity<List<MovementDTO>> getAll() {
-        return ResponseEntity.ok(movementService.getAllMovements());
+    @GetMapping("/article/{articleId}")
+    public ResponseEntity<List<MovementDTO>> getByArticleId(@PathVariable Long articleId) {
+        return ResponseEntity.ok(movementService.getMovementsByArticleId(articleId));
     }
 
     @PostMapping
