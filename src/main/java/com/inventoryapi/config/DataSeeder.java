@@ -1,0 +1,83 @@
+package com.inventoryapi.config;
+
+import com.inventoryapi.entity.*;
+import com.inventoryapi.repository.*;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+
+@Component
+public class DataSeeder implements CommandLineRunner {
+
+    @Autowired private GroupRepository groupRepository;
+    @Autowired private ArticleRepository articleRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
+
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+
+        if (articleRepository.count() > 0) return;
+
+        System.out.println("---- INICIANDO CARGA DE DATOS DE PRUEBA ----");
+
+        // 1. Crear Roles
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+
+        Role userRole = new Role();
+        userRole.setName("ROLE_USER");
+
+        roleRepository.saveAll(Set.of(adminRole, userRole));
+
+        // 2. Crear Usuarios
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword("admin123");
+        admin.setRoles(Set.of(adminRole));
+
+        User empleado = new User();
+        empleado.setUsername("pepe");
+        empleado.setPassword("pepe123");
+        empleado.setRoles(Set.of(userRole));
+
+        userRepository.saveAll(Set.of(admin, empleado));
+
+        // 3. Crear Grupos
+        Group electronics = new Group();
+        electronics.setName("Electronics");
+
+        Group furniture = new Group();
+        furniture.setName("Furniture");
+
+        groupRepository.saveAll(Set.of(electronics, furniture));
+
+        // 4. Crear Artículos
+
+        Article tv = new Article();
+        tv.setName("Samsung Smart TV 55");
+        tv.setUnitPrice(600.00);
+        tv.setStock(10);
+        tv.setGroup(electronics); // Relación
+
+        Article laptop = new Article();
+        laptop.setName("Dell XPS 13");
+        laptop.setUnitPrice(1200.00);
+        laptop.setStock(5);
+        laptop.setGroup(electronics);
+
+        Article chair = new Article();
+        chair.setName("Office Chair");
+        chair.setUnitPrice(150.00);
+        chair.setStock(20);
+        chair.setGroup(furniture);
+
+        articleRepository.saveAll(Set.of(tv, laptop, chair));
+
+        System.out.println("---- CARGA DE DATOS COMPLETADA ----");
+    }
+}

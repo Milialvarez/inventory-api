@@ -6,8 +6,12 @@ import lombok.ToString;
 import java.util.List;
 
 @Entity
-@Data
 public class Group {
+    public Group(String name, List<Article> articulos) {
+        this.name = name;
+        this.articulos = articulos;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +25,32 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Article> articulos;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Article> getArticulos() {
+        return articulos;
+    }
+
+    public void setArticulos(List<Article> articulos) {
+        this.articulos = articulos;
+    }
+
+    public Group() {
+
+    }
 }
