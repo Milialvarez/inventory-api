@@ -2,6 +2,7 @@ package com.inventoryapi.service;
 
 import com.inventoryapi.dto.GroupDTO;
 import com.inventoryapi.entity.Group;
+import com.inventoryapi.exception.ResourceNotFoundException;
 import com.inventoryapi.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class GroupService {
     @Transactional(readOnly = true)
     public GroupDTO getGroupById(Long id) {
         Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Group not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
         return convertToDTO(group);
     }
 
@@ -34,7 +35,6 @@ public class GroupService {
     public GroupDTO createGroup(GroupDTO dto) {
         Group group = new Group();
         group.setName(dto.getName());
-
         Group savedGroup = groupRepository.save(group);
         return convertToDTO(savedGroup);
     }
@@ -42,10 +42,9 @@ public class GroupService {
     @Transactional
     public GroupDTO updateGroup(Long id, GroupDTO dto) {
         Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Group not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
 
         group.setName(dto.getName());
-
         Group updatedGroup = groupRepository.save(group);
         return convertToDTO(updatedGroup);
     }
@@ -53,7 +52,7 @@ public class GroupService {
     @Transactional
     public void deleteGroup(Long id) {
         if (!groupRepository.existsById(id)) {
-            throw new RuntimeException("Group not found with id: " + id);
+            throw new ResourceNotFoundException("Group not found with id: " + id);
         }
         groupRepository.deleteById(id);
     }

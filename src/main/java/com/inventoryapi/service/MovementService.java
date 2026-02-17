@@ -5,6 +5,9 @@ import com.inventoryapi.entity.Article;
 import com.inventoryapi.entity.Movement;
 import com.inventoryapi.entity.User;
 import com.inventoryapi.enums.MovementType;
+import com.inventoryapi.exception.InsufficientStockException;
+import com.inventoryapi.exception.InvalidDataException;
+import com.inventoryapi.exception.ResourceNotFoundException;
 import com.inventoryapi.repository.ArticleRepository;
 import com.inventoryapi.repository.MovementRepository;
 import com.inventoryapi.repository.UserRepository;
@@ -31,21 +34,24 @@ public class MovementService {
     @Transactional
     public MovementDTO registerMovement(MovementDTO dto) {
 
+        // Usamos ResourceNotFoundException
         Article article = articleRepository.findById(dto.getArticleId())
-                .orElseThrow(() -> new RuntimeException("Article not found with id: " + dto.getArticleId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found with id: " + dto.getArticleId()));
 
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + dto.getUserId()));
 
         if (dto.getType() == MovementType.SALIDA) {
             if (article.getStock() < dto.getAmount()) {
-                throw new RuntimeException("Insufficient stock. Current stock: " + article.getStock());
+                // Usamos InsufficientStockException
+                throw new InsufficientStockException("Insufficient stock. Current stock: " + article.getStock() + ", Requested: " + dto.getAmount());
             }
             article.setStock(article.getStock() - dto.getAmount());
         } else if (dto.getType() == MovementType.ENTRADA) {
             article.setStock(article.getStock() + dto.getAmount());
         } else {
-            throw new RuntimeException("Invalid movement type");
+            // Usamos InvalidDataException
+            throw new InvalidDataException("Invalid movement type: " + dto.getType());
         }
 
         Movement movement = new Movement();
@@ -64,7 +70,8 @@ public class MovementService {
     @Transactional(readOnly = true)
     public List<MovementDTO> getMovementsByArticleId(Long articleId) {
         if (!articleRepository.existsById(articleId)) {
-            throw new RuntimeException("Article not found with id: " + articleId);
+            // Usamos ResourceNotFoundException
+            throw new ResourceNotFoundException("Article not found with id: " + articleId);
         }
 
         return movementRepository.findByArticleId(articleId).stream()
