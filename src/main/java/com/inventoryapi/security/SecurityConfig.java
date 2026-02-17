@@ -25,35 +25,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Desactivamos CSRF porque nuestra API es Stateless (no usa cookies de sesión)
                 .csrf(csrf -> csrf.disable())
-
-                // 2. Configuramos las rutas (Endpoints)
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas PÚBLICAS (Cualquiera puede entrar sin token)
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
 
-                        // Rutas PRIVADAS (Todo el resto requiere estar autenticado)
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+
+                        .requestMatchers("/error").permitAll()
+
                         .anyRequest().authenticated()
                 )
-
-                // 3. Le decimos a Spring que NO guarde sesiones en memoria (STATELESS)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 4. Ponemos nuestra "Aduana" (JwtFilter) ANTES del filtro por defecto de Spring
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Bean para encriptar contraseñas (BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Bean para manejar la autenticación (El que verifica usuario/contraseña)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

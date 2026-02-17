@@ -7,7 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+@ControllerAdvice(basePackages = "com.inventoryapi.controller")
 public class GlobalExceptionHandler {
 
   // 1. Manejo de Recurso No Encontrado (404)
