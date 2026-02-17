@@ -48,4 +48,10 @@ public class ArticleController {
         articleService.deleteArticle(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/stockLimit/{stock}")
+    public ResponseEntity<List<ArticleDTO>> findArticlesWithLessStockThan(@PathVariable Integer stock) {
+        return ResponseEntity.ok(articleService.findArticlesWithLessStockThan(stock));
+    }
 }

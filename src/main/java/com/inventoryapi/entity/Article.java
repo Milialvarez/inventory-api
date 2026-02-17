@@ -1,7 +1,6 @@
 package com.inventoryapi.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 public class Article {

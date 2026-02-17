@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByNameContainingIgnoreCase(String name);
-
     @Query("SELECT a FROM Article a WHERE a.stock < :stockLimit")
     List<Article> findArticlesWithLessStockThan(@Param("stock") Integer stockLimit);
 }

@@ -85,4 +85,17 @@ public class ArticleService {
         dto.setGroupId(article.getGroup().getId());
         return dto;
     }
+
+    @Transactional(readOnly = true)
+    public List<ArticleDTO> findArticlesWithLessStockThan(Integer stock) {
+        List<Article> articles = articleRepository.findArticlesWithLessStockThan(stock);
+
+        if (articles.isEmpty()) {
+            throw new ResourceNotFoundException("No articles found with stock less than: " + stock);
+        }
+
+        return articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }
