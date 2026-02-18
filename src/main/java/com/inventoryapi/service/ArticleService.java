@@ -98,4 +98,13 @@ public class ArticleService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<ArticleDTO> getPopularArticlesByGroup(Integer groupId, Long minMovements) {
+        List<Article> articles = articleRepository.findArticlesByGroupWithMinMovements(groupId, minMovements);
+
+        return articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }

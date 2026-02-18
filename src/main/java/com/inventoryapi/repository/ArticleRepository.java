@@ -12,4 +12,15 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT a FROM Article a WHERE a.stock < :stockLimit")
     List<Article> findArticlesWithLessStockThan(@Param("stock") Integer stockLimit);
+
+    @Query("SELECT m.article " +
+            "FROM Movement m " +
+            "JOIN m.article.group g " +
+            "WHERE g.id = :groupId " +
+            "GROUP BY m.article " +
+            "HAVING COUNT(m) >= :minMovements")
+    List<Article> findArticlesByGroupWithMinMovements(
+            @Param("groupId") Integer groupId,
+            @Param("minMovements") Long minMovements
+    );
 }

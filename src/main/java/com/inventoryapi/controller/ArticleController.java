@@ -54,4 +54,19 @@ public class ArticleController {
     public ResponseEntity<List<ArticleDTO>> findArticlesWithLessStockThan(@PathVariable Integer stock) {
         return ResponseEntity.ok(articleService.findArticlesWithLessStockThan(stock));
     }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/filter-popular")
+    public ResponseEntity<List<ArticleDTO>> getPopularArticles(
+            @RequestParam Integer groupId,
+            @RequestParam(defaultValue = "10") Long minMovements
+    ) {
+        List<ArticleDTO> articles = articleService.getPopularArticlesByGroup(groupId, minMovements);
+
+        if(articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
 }
