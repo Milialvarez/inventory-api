@@ -1,6 +1,5 @@
-# Inventory API 
--
-Este proyecto fue realizado con el objetivo de aplicar conocimientos aprendidos en la cátedra Arquitecturas Web, usando Spring Boot como framework y arquitectura monolítica.
+# Inventory API
+- Este proyecto fue realizado con el objetivo de aplicar conocimientos aprendidos en la cátedra Arquitecturas Web, usando Spring Boot como framework y arquitectura monolítica.
 ---
 ## Tecnologías
 - Spring Boot
